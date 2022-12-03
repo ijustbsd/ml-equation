@@ -23,8 +23,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.plot_data = {}
+        self.plot_data = {
+            "x": [],
+            "t": [],
+        }
 
+        self.resize(1280, 720)
         self.setup_ui()
 
     def setup_ui(self):
@@ -38,33 +42,125 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addWidget(self.left_panel)
         layout.addWidget(self.right_panel)
 
+        self.params_tabs = QtWidgets.QTabWidget()
+
         self.left_layout = QtWidgets.QVBoxLayout(self.left_panel)
         self.right_layout = QtWidgets.QVBoxLayout(self.right_panel)
 
-        self.input_params = QtWidgets.QGroupBox("Входные параметры:", self.left_panel)
-        self.q_param = QtWidgets.QDoubleSpinBox(self.input_params)
-        self.q_param.setValue(1.2)
-        self.lam_param = QtWidgets.QDoubleSpinBox(self.input_params)
-        self.lam_param.setValue(2.0)
-        self.T_param = QtWidgets.QDoubleSpinBox(self.input_params)
-        self.T_param.setValue(5.0)
-        self.f_param = QtWidgets.QLineEdit(self.input_params)
-        self.f_param.setText("np.sin(t)")
+        self.input_params_q01 = QtWidgets.QGroupBox(
+            "Входные параметры:",
+            self.left_panel,
+        )
+        self.C_param = QtWidgets.QDoubleSpinBox(self.input_params_q01)
+        self.C_param.setValue(2)
+        self.q01_param = QtWidgets.QDoubleSpinBox(self.input_params_q01)
+        self.q01_param.setMinimum(0)
+        self.q01_param.setMaximum(1)
+        self.q01_param.setValue(0.2)
+        self.lam01_param = QtWidgets.QDoubleSpinBox(self.input_params_q01)
+        self.lam01_param.setValue(2.0)
+        self.T01_param = QtWidgets.QDoubleSpinBox(self.input_params_q01)
+        self.T01_param.setValue(5.0)
+        self.f01_param = QtWidgets.QLineEdit(self.input_params_q01)
+        self.f01_param.setText("np.sin(t)")
 
-        input_params_layout = QtWidgets.QGridLayout(self.input_params)
-        input_params_layout.addWidget(QtWidgets.QLabel("q = ", self.input_params), 0, 0)
-        input_params_layout.addWidget(self.q_param, 0, 1)
-        input_params_layout.addWidget(QtWidgets.QLabel("λ = ", self.input_params), 1, 0)
-        input_params_layout.addWidget(self.lam_param, 1, 1)
-        input_params_layout.addWidget(QtWidgets.QLabel("T = ", self.input_params), 2, 0)
-        input_params_layout.addWidget(self.T_param, 2, 1)
-        input_params_layout.addWidget(QtWidgets.QLabel("f = ", self.input_params), 3, 0)
-        input_params_layout.addWidget(self.f_param, 3, 1)
-        self.input_params.setLayout(input_params_layout)
-        self.left_layout.addWidget(self.input_params)
+        input_params_layout_q01 = QtWidgets.QGridLayout(self.input_params_q01)
+        input_params_layout_q01.addWidget(
+            QtWidgets.QLabel("C = ", self.input_params_q01),
+            0,
+            0,
+        )
+        input_params_layout_q01.addWidget(self.C_param, 0, 1)
+        input_params_layout_q01.addWidget(
+            QtWidgets.QLabel("q = ", self.input_params_q01),
+            1,
+            0,
+        )
+        input_params_layout_q01.addWidget(self.q01_param, 1, 1)
+        input_params_layout_q01.addWidget(
+            QtWidgets.QLabel("λ = ", self.input_params_q01),
+            2,
+            0,
+        )
+        input_params_layout_q01.addWidget(self.lam01_param, 2, 1)
+        input_params_layout_q01.addWidget(
+            QtWidgets.QLabel("T = ", self.input_params_q01),
+            3,
+            0,
+        )
+        input_params_layout_q01.addWidget(self.T01_param, 3, 1)
+        input_params_layout_q01.addWidget(
+            QtWidgets.QLabel("f = ", self.input_params_q01),
+            4,
+            0,
+        )
+        input_params_layout_q01.addWidget(self.f01_param, 4, 1)
+        self.input_params_q01.setLayout(input_params_layout_q01)
+
+        self.input_params_q12 = QtWidgets.QGroupBox(
+            "Входные параметры:",
+            self.left_panel,
+        )
+        self.C1_param = QtWidgets.QDoubleSpinBox(self.input_params_q12)
+        self.C1_param.setValue(2)
+        self.C2_param = QtWidgets.QDoubleSpinBox(self.input_params_q12)
+        self.C2_param.setValue(2)
+        self.q12_param = QtWidgets.QDoubleSpinBox(self.input_params_q12)
+        self.q12_param.setMinimum(1)
+        self.q12_param.setMaximum(2)
+        self.q12_param.setValue(1.2)
+        self.lam12_param = QtWidgets.QDoubleSpinBox(self.input_params_q12)
+        self.lam12_param.setValue(2.0)
+        self.T12_param = QtWidgets.QDoubleSpinBox(self.input_params_q12)
+        self.T12_param.setValue(5.0)
+        self.f12_param = QtWidgets.QLineEdit(self.input_params_q12)
+        self.f12_param.setText("np.sin(t)")
+
+        input_params_layout_q12 = QtWidgets.QGridLayout(self.input_params_q12)
+        input_params_layout_q12.addWidget(
+            QtWidgets.QLabel("C1 = ", self.input_params_q12),
+            0,
+            0,
+        )
+        input_params_layout_q12.addWidget(self.C1_param, 0, 1)
+        input_params_layout_q12.addWidget(
+            QtWidgets.QLabel("C2 = ", self.input_params_q12),
+            1,
+            0,
+        )
+        input_params_layout_q12.addWidget(self.C2_param, 1, 1)
+        input_params_layout_q12.addWidget(
+            QtWidgets.QLabel("q = ", self.input_params_q12),
+            2,
+            0,
+        )
+        input_params_layout_q12.addWidget(self.q12_param, 2, 1)
+        input_params_layout_q12.addWidget(
+            QtWidgets.QLabel("λ = ", self.input_params_q12),
+            3,
+            0,
+        )
+        input_params_layout_q12.addWidget(self.lam12_param, 3, 1)
+        input_params_layout_q12.addWidget(
+            QtWidgets.QLabel("T = ", self.input_params_q12),
+            4,
+            0,
+        )
+        input_params_layout_q12.addWidget(self.T12_param, 4, 1)
+        input_params_layout_q12.addWidget(
+            QtWidgets.QLabel("f = ", self.input_params_q12),
+            5,
+            0,
+        )
+        input_params_layout_q12.addWidget(self.f12_param, 5, 1)
+        self.input_params_q12.setLayout(input_params_layout_q12)
+
+        self.params_tabs.addTab(self.input_params_q01, "0 < q <= 1")
+        self.params_tabs.addTab(self.input_params_q12, "1 < q <= 2")
+        self.left_layout.addWidget(self.params_tabs)
 
         self.internal_params = QtWidgets.QGroupBox("Параметры:", self.left_panel)
-        self.step_param = QtWidgets.QDoubleSpinBox(self.input_params)
+        self.step_param = QtWidgets.QDoubleSpinBox(self.internal_params)
         self.step_param.setValue(0.1)
         internal_params_layout = QtWidgets.QGridLayout(self.internal_params)
         internal_params_layout.addWidget(
@@ -114,6 +210,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.go_btn.clicked.connect(self.go_btn_clicked)
         self.left_layout.addWidget(self.go_btn)
 
+        self.clear_btn = QtWidgets.QPushButton("Очистить график")
+        self.clear_btn.clicked.connect(self.clear_btn_clicked)
+        self.left_layout.addWidget(self.clear_btn)
+
         self.canvas = MplCanvas(self.right_panel)
         self.toolbar = NavigationToolbar2QT(self.canvas, self.right_panel)
         self.toolbar.setStyleSheet("QToolBar { border: 0px }")
@@ -143,19 +243,34 @@ class MainWindow(QtWidgets.QMainWindow):
             self.add_row_btn.setEnabled(True)
             self.rm_row_btn.setEnabled(True)
 
-            self.T_param.setEnabled(False)
-            self.f_param.setEnabled(False)
+            self.T01_param.setEnabled(False)
+            self.T12_param.setEnabled(False)
+            self.f01_param.setEnabled(False)
+            self.f12_param.setEnabled(False)
             self.step_param.setEnabled(False)
         else:
             self.f_table.setEnabled(False)
             self.add_row_btn.setEnabled(False)
             self.rm_row_btn.setEnabled(False)
 
-            self.T_param.setEnabled(True)
-            self.f_param.setEnabled(True)
+            self.T01_param.setEnabled(True)
+            self.T12_param.setEnabled(True)
+            self.f01_param.setEnabled(True)
+            self.f12_param.setEnabled(True)
             self.step_param.setEnabled(True)
 
     def go_btn_clicked(self):
+
+        if self.params_tabs.currentIndex() == 0:
+            q = self.q01_param.value()
+            lam = self.lam01_param.value()
+            T = self.T01_param.value()
+            f_param = self.f01_param
+        elif self.params_tabs.currentIndex() == 1:
+            q = self.q12_param.value()
+            lam = self.lam12_param.value()
+            T = self.T12_param.value()
+            f_param = self.f12_param
 
         if self.is_use_table_f.isChecked():
             table_data = {}
@@ -173,17 +288,19 @@ class MainWindow(QtWidgets.QMainWindow):
             f = interpolate.interp1d(t_values, x_values)
 
         else:
-            T = self.T_param.value()
 
             def f(t):
-                return eval(self.f_param.text())
+                return eval(f_param.text())
 
             step = self.step_param.value()
             t_range = np.arange(0, T + step, step, dtype=np.float64)
 
         params = {
-            "q": self.q_param.value(),
-            "lam": self.lam_param.value(),
+            "C": self.C_param.value(),
+            "C1": self.C1_param.value(),
+            "C2": self.C2_param.value(),
+            "q": q,
+            "lam": lam,
             "T": T,
             "f": f,
         }
@@ -192,11 +309,18 @@ class MainWindow(QtWidgets.QMainWindow):
         for t in t_range:
             x_t.append(main.function(t, **params)[0])
 
-        self.plot_data["t"] = t_range
-        self.plot_data["x"] = x_t
+        self.plot_data["t"].extend(t_range)
+        self.plot_data["x"].extend(x_t)
+
+        self.canvas.axes.plot(t_range, x_t, label=f'q = {params["q"]}')
+        self.canvas.axes.legend()
+        self.canvas.draw()
+
+    def clear_btn_clicked(self):
+        self.plot_data["t"] = []
+        self.plot_data["x"] = []
 
         self.canvas.axes.cla()
-        self.canvas.axes.plot(t_range, x_t)
         self.canvas.draw()
 
     def save_plot_data_btn_clicked(self):
